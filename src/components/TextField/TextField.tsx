@@ -21,15 +21,13 @@ export const TextField: React.FC<Props> = ({
   value,
   label = name,
   placeholder = `Enter ${label}`,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   required = false,
-  hasError: externalHasError,
+  hasError = false,
   onChange,
   onBlur,
 }) => {
   const [id] = useState(() => `${name}-${getRandomDigits()}`);
-  const [touched, setTouched] = useState(false);
-
-  const showError = externalHasError ?? (touched && required && !value);
 
   return (
     <div className="field">
@@ -43,19 +41,17 @@ export const TextField: React.FC<Props> = ({
           id={id}
           data-cy={`movie-${name}`}
           className={classNames('input', {
-            'is-danger': showError,
+            'is-danger': hasError,
           })}
           placeholder={placeholder}
           value={value}
+          required={required}
           onChange={event => onChange?.(event.target.value)}
-          onBlur={() => {
-            setTouched(true);
-            onBlur?.();
-          }}
+          onBlur={onBlur}
         />
       </div>
 
-      {showError && <p className="help is-danger">{`${label} is required`}</p>}
+      {hasError && <p className="help is-danger">{`${label} is required`}</p>}
     </div>
   );
 };
